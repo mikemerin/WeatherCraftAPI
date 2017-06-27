@@ -8,9 +8,7 @@ class CreateHourlies < ActiveRecord::Migration[5.1]
       t.string :visibility
       t.string :weatherType
       t.string :dryBulbFarenheit
-      t.string :dryBulbCelsius
       t.string :dewPointFarenheit
-      t.string :dewPointCelsius
       t.string :relativeHumidity
       t.string :windSpeed
       t.string :windDirection

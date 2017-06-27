@@ -40,6 +40,8 @@ ActiveRecord::Schema.define(version: 20170626232634) do
   create_table "favorites", force: :cascade do |t|
     t.string "user_id"
     t.string "station_id"
+    t.string "daily_id"
+    t.string "comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -52,9 +54,7 @@ ActiveRecord::Schema.define(version: 20170626232634) do
     t.string "visibility"
     t.string "weatherType"
     t.string "dryBulbFarenheit"
-    t.string "dryBulbCelsius"
     t.string "dewPointFarenheit"
-    t.string "dewPointCelsius"
     t.string "relativeHumidity"
     t.string "windSpeed"
     t.string "windDirection"
@@ -77,9 +77,9 @@ ActiveRecord::Schema.define(version: 20170626232634) do
     t.string "totalSnowfall"
     t.string "max24HrSnowfall"
     t.string "dateMax24HrSnowfall"
-    t.string "daysWithPrecip_01inch"
-    t.string "daysWithPrecip_10inch"
-    t.string "daysWithSnowfall_1inch"
+    t.string "daysWithPrecip_GE_p01inch"
+    t.string "daysWithPrecip_GE_p10inch"
+    t.string "daysWithSnowfall_GE_1p0inch"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 20170626232634) do
     t.string "latitude"
     t.string "longitude"
     t.string "groundHeight"
+    t.string "stationHeight"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

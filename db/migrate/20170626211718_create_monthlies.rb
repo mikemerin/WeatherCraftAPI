@@ -14,9 +14,9 @@ class CreateMonthlies < ActiveRecord::Migration[5.1]
       t.string :totalSnowfall
       t.string :max24HrSnowfall
       t.string :dateMax24HrSnowfall
-      t.string :daysWithPrecip_01inch
-      t.string :daysWithPrecip_10inch
-      t.string :daysWithSnowfall_1inch
+      t.string :daysWithPrecip_GE_p01inch
+      t.string :daysWithPrecip_GE_p10inch
+      t.string :daysWithSnowfall_GE_1p0inch
 
       t.timestamps
     end

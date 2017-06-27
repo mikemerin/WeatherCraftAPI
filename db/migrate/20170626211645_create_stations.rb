@@ -9,6 +9,7 @@ class CreateStations < ActiveRecord::Migration[5.1]
       t.string :latitude
       t.string :longitude
       t.string :groundHeight
+      t.string :stationHeight
 
       t.timestamps
     end
