@@ -20,6 +20,8 @@ This API is a collection of all hourly/daily/monthly data from every NWS-certifi
 
 # WeatherWokeApp
 
+[index](http://imgur.com/kUh6Bdl.png "index")
+
 This application allows a user to view all data of weather conditions that occurred for any date and location in the US over the past 10 years, including clear weather graphs to help visualize the weather breakdowns.
 
 For any date and location, a user can view the main info for that day, the hourly breakdowns, daily data, monthly summaries, and top social media #weather tweets and images that occurred. They can also choose to see weather leading up to that date/location, see a year to year comparison of weather conditions for the chosen date and location to see the trends, and also see a projection of the future weather for that day either by a general climate or a trend prediction.
