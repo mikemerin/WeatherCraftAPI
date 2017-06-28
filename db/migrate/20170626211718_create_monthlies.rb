@@ -8,7 +8,7 @@ class CreateMonthlies < ActiveRecord::Migration[5.1]
       t.string :avgMinTemp
       t.string :departureMinTemp
       t.string :avgTemp
-      t.string :departurefromNormal
+      t.string :departureFromNormal
       t.string :totalMonthlyPrecip
       t.string :departureFromNormalPrecip
       t.string :totalSnowfall

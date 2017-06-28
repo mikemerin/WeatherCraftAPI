@@ -36,7 +36,8 @@ class StationsController < ApplicationController
         :location,
         :latitude,
         :longitude,
-        :groundHeight
+        :groundHeight,
+        :stationHeight
         )
   end
 

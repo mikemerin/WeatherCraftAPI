@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 20170626232634) do
     t.string "avgMinTemp"
     t.string "departureMinTemp"
     t.string "avgTemp"
-    t.string "departurefromNormal"
+    t.string "departureFromNormal"
     t.string "totalMonthlyPrecip"
     t.string "departureFromNormalPrecip"
     t.string "totalSnowfall"

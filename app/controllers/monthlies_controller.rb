@@ -36,15 +36,15 @@ class MonthliesController < ApplicationController
         :avgMinTemp,
         :departureMinTemp,
         :avgTemp,
-        :departurefromNormal,
+        :departureFromNormal,
         :totalMonthlyPrecip,
         :departureFromNormalPrecip,
         :totalSnowfall,
         :max24HrSnowfall,
         :dateMax24HrSnowfall,
-        :daysWithPrecip_01inch,
-        :daysWithPrecip_10inch,
-        :daysWithSnowfall_1inch
+        :daysWithPrecip_GE_p01inch,
+        :daysWithPrecip_GE_p10inch,
+        :daysWithSnowfall_GE_1p0inch
         )
   end
 
