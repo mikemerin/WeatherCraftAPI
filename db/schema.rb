@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(version: 20170626232634) do
     t.string "stationHeight"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["wban"], name: "index_stations_on_wban"
   end
 
   create_table "users", force: :cascade do |t|

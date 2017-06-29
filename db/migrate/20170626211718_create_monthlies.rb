@@ -1,7 +1,7 @@
 class CreateMonthlies < ActiveRecord::Migration[5.1]
   def change
     create_table :monthlies do |t|
-      t.string :wban
+      t.string :wban, foreign_key: true
       t.string :yearMonth
       t.string :avgMaxTemp
       t.string :departureMaxTemp
@@ -20,5 +20,6 @@ class CreateMonthlies < ActiveRecord::Migration[5.1]
 
       t.timestamps
     end
+    add_foreign_key "stations", "monthlies"
   end
 end

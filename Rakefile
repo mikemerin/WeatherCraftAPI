@@ -17,6 +17,7 @@ def scrape_stations(file, t)
 
       if row != File.foreach(file).first
         wban, wmo, callsign, climateDivisionCode, climateDivisionStateCode, climateDivisionStationcode, name, state, location, latitude, longitude, groundHeight, stationHeight, barometer, timezone = split_row
+
         time = ActiveRecord::Base.connection.quote(Time.now)
         array << "(#{wban}, #{callsign}, #{name}, #{state}, #{location}, #{latitude}, #{longitude}, #{groundHeight}, #{stationHeight}, #{time}, #{time})"
       end
@@ -82,7 +83,6 @@ def scrape_dailies(file, t)
 
       time = ActiveRecord::Base.connection.quote(Time.now)
       array << "(#{wban}, #{yearMonthDay}, #{tmax}, #{tmin}, #{tavg}, #{depart}, #{dewPoint}, #{sunrise}, #{sunset}, #{codeSum}, #{depth}, #{snowFall}, #{precipTotal}, #{resultSpeed}, #{resultDir}, #{avgSpeed}, #{max5Speed}, #{max5Dir}, #{max2Speed}, #{max2Dir}, #{time}, #{time})"
-
     end
 
     count += 1
@@ -98,6 +98,8 @@ def scrape_dailies(file, t)
 
 end
 
+# station = Station.find_by(wban: wban)
+
 def scrape_monthlies(file, t)
 
   count, array = 0, []
@@ -105,23 +107,14 @@ def scrape_monthlies(file, t)
   puts "---------"
 
   File.foreach(file) do |row|
-
     split_row = row.split(",")
     split_row.map! { |x| ActiveRecord::Base.connection.quote(x) }
 
     if row != File.foreach(file).first
       wban, yearMonth, avgMaxTemp, departureMaxTemp, avgMinTemp, departureMinTemp, avgTemp, departureFromNormal, avgDewPoint, avgWetBulb, heatingDegreeDays, coolingDegreeDays, hDDMonthlyDeparture, cDDMonthlyDeparture, hDDSeasonToDate, cDDSeasonToDate, hDDSeasonToDateDeparture, cDDSeasonToDateDeparture, meanStationPressure, meanSeaLevelPressure, maxSeaLevelPressure, dateMaxSeaLevelPressure, timeMaxSeaLevelPressure, minSeaLevelPressure, dateMinSeaLevelPressure, timeMinSeaLevelPressure, totalMonthlyPrecip, departureFromNormalPrecip, max24HrPrecip, dateMax24HrPrecip, totalSnowfall, max24HrSnowfall, dateMax24HrSnowfall, max12ZSnowDepth, dateMax12ZSnowDepth, maxTemp_GE_90Days, maxTemp_LE_32Days, minTemp_LE_32Days, minTemp_LE_0Days, thunderstormDays, heavyFogDays, daysWithPrecip_GE_p01inch, daysWithPrecip_GE_p10inch, daysWithSnowfall_GE_1p0inch, waterEquivalent, resultantWindSpeed, resultantWindDirection, avgWindSpeed, avgHDD, avgCDD = split_row
+
       time = ActiveRecord::Base.connection.quote(Time.now)
-
-      station = Station.find_by(wban: wban)
-
       array << "(#{wban}, #{yearMonth}, #{avgMaxTemp}, #{departureMaxTemp}, #{avgMinTemp}, #{departureMinTemp}, #{avgTemp}, #{departureFromNormal}, #{totalMonthlyPrecip}, #{departureFromNormalPrecip}, #{totalSnowfall}, #{max24HrSnowfall}, #{dateMax24HrSnowfall}, #{daysWithPrecip_GE_p01inch}, #{daysWithPrecip_GE_p10inch}, #{daysWithSnowfall_GE_1p0inch}, #{time}, #{time})"
-
-
-
-      append station info by foreign_key of "wban"
-      # m.station = Station.find_by(wban: wban)
-      # m.save
     end
 
     count += 1
@@ -129,7 +122,7 @@ def scrape_monthlies(file, t)
 
   end
 
-  sql = "INSERT INTO monthlies (wban, yearMonth, avgMaxTemp, departureMaxTemp, avgMinTemp, departureMinTemp, avgTemp, departureFromNormal, totalMonthlyPrecip, departureFromNormalPrecip, totalSnowfall, max24HrSnowfall, dateMax24HrSnowfall, daysWithPrecip_GE_p01inch, daysWithPrecip_GE_p10inch, daysWithSnowfall_GE_1p0inch, created_at, updated_at, station) VALUES " + array.join(", ")
+  sql = "INSERT INTO monthlies (wban, yearMonth, avgMaxTemp, departureMaxTemp, avgMinTemp, departureMinTemp, avgTemp, departureFromNormal, totalMonthlyPrecip, departureFromNormalPrecip, totalSnowfall, max24HrSnowfall, dateMax24HrSnowfall, daysWithPrecip_GE_p01inch, daysWithPrecip_GE_p10inch, daysWithSnowfall_GE_1p0inch, created_at, updated_at) VALUES " + array.join(", ")
   ActiveRecord::Base.connection.execute(sql)
 
   puts "---------"
@@ -172,7 +165,7 @@ namespace :app do
   desc "scrape monthlies"
   task :scrape_monthlies => :environment do
     t = Time.now
-    scrape_monthlies("/Users/flatironschool/Downloads/QCLCD_Gathered/201706monthly.txt", t)
+    scrape_monthlies("/Users/flatironschool/Downloads/QCLCD_Gathered/monthly.txt", t)
     t2 = Time.now
     puts "\nMigration ended at #{Time.now} and took #{(t2 - t) / 60} minutes #{(t2 - t) % 60} seconds)."
     puts "There are now #{Monthly.all.count} monthly datapoints."
