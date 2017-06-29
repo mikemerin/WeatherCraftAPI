@@ -6,16 +6,33 @@ Rails.application.load_tasks
 
 def scrape_stations(file, t)
 
+  count, array = 0, []
+  puts "\n#{file} migration starting at #{t}"
+  puts "---------"
+
   File.foreach(file) do |row|
     unless row[0] == "|"
       split_row = row.split("|")
+      split_row.map! { |x| ActiveRecord::Base.connection.quote(x) }
 
       if row != File.foreach(file).first
         wban, wmo, callsign, climateDivisionCode, climateDivisionStateCode, climateDivisionStationcode, name, state, location, latitude, longitude, groundHeight, stationHeight, barometer, timezone = split_row
-        Station.create(wban: wban, callsign: callsign, name: name, state: state, location: location, latitude: latitude, longitude: longitude, groundHeight: groundHeight, stationHeight: stationHeight)
+        time = ActiveRecord::Base.connection.quote(Time.now)
+        array << "(#{wban}, #{callsign}, #{name}, #{state}, #{location}, #{latitude}, #{longitude}, #{groundHeight}, #{stationHeight}, #{time}, #{time})"
       end
     end
+
+    count += 1
+    puts "#{Time.now - t} s: #{count} entries added" if count % 500 == 0
+
   end
+
+  sql = "INSERT INTO stations (wban, name, callsign, state, location, latitude, longitude, groundHeight, stationHeight, created_at, updated_at) VALUES " + array.join(", ")
+  ActiveRecord::Base.connection.execute(sql)
+
+  puts "---------"
+  puts "#{count} total entries added."
+
 end
 
 def scrape_hourlies(file, t)
