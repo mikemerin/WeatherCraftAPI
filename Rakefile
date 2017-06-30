@@ -1,5 +1,3 @@
-# rake db:drop && rake db:create && rake db:migrate && rake db:migrate RAILS_ENV=development
-
 require_relative 'config/application'
 
 Rails.application.load_tasks
@@ -19,20 +17,20 @@ def scrape_stations(file, t)
         wban, wmo, callsign, climateDivisionCode, climateDivisionStateCode, climateDivisionStationcode, name, state, location, latitude, longitude, groundHeight, stationHeight, barometer, timezone = split_row
 
         time = ActiveRecord::Base.connection.quote(Time.now)
-        array << "(#{wban}, #{callsign}, #{name}, #{state}, #{location}, #{latitude}, #{longitude}, #{groundHeight}, #{stationHeight}, #{time}, #{time})"
+        array << "(#{wban}, #{location}, #{callsign}, #{state}, #{name}, #{latitude}, #{longitude}, #{groundHeight}, #{stationHeight}, #{time}, #{time})"
       end
     end
 
     count += 1
-    puts "#{Time.now - t} s: #{count} entries added" if count % 500 == 0
+    $total_count += 1
 
   end
 
-  sql = "INSERT INTO stations (wban, name, callsign, state, location, latitude, longitude, groundHeight, stationHeight, created_at, updated_at) VALUES " + array.join(", ")
+  sql = "INSERT INTO stations (wban, name, callsign, state, location, latitude, longitude, ground_height, station_height, created_at, updated_at) VALUES " + array.join(", ")
   ActiveRecord::Base.connection.execute(sql)
 
   puts "---------"
-  puts "#{count} total entries added."
+  puts "#{count} entries from this file were added, with #{$total_count} total entries."
 
 end
 
@@ -55,15 +53,25 @@ def scrape_hourlies(file, t)
     end
 
     count += 1
-    puts "#{Time.now - t} s: #{count} entries added" if count % 250 == 0
+    $total_count += 1
+    puts "#{Time.now - t} s: #{count} entries added" if count % 10000 == 0
+
+    # because it's such a large file, chunk out the SQL calls which cuts down on end-time
+    if count % 200000 == 0
+      sql = "INSERT INTO hourlies (wban, date, time, sky_condition, visibility, weather_type, dry_bulb_farenheit, dew_point_farenheit, relative_humidity, wind_speed, wind_direction, hourly_precip, created_at, updated_at) VALUES " + array.join(", ")
+      puts "============= Seeding 200,000 rows ============="
+      ActiveRecord::Base.connection.execute(sql)
+      puts "============= #{Hourly.all.count} rows are now in the database ============="
+      array = []
+    end
 
   end
 
-  sql = "INSERT INTO hourlies (wban, date, time, skyCondition, visibility, weatherType, dryBulbFarenheit, dewPointFarenheit, relativeHumidity, windSpeed, windDirection, hourlyPrecip, created_at, updated_at) VALUES " + array.join(", ")
+  sql = "INSERT INTO hourlies (wban, date, time, sky_condition, visibility, weather_type, dry_bulb_farenheit, dew_point_farenheit, relative_humidity, wind_speed, wind_direction, hourly_precip, created_at, updated_at) VALUES " + array.join(", ")
   ActiveRecord::Base.connection.execute(sql)
 
   puts "---------"
-  puts "#{count} total entries added."
+  puts "#{count} entries from this file were added, with #{$total_count} total entries."
 
 end
 
@@ -86,19 +94,18 @@ def scrape_dailies(file, t)
     end
 
     count += 1
-    puts "#{Time.now - t} s: #{count} entries added" if count % 250 == 0
+    $total_count += 1
+    puts "#{Time.now - t} s: #{count} entries added" if count % 5000 == 0
 
   end
 
-  sql = "INSERT INTO dailies (wban, yearMonthDay, tmax, tmin, tavg, depart, dewPoint, sunrise, sunset, codeSum, depth, snowFall, precipTotal, resultSpeed, resultDir, avgSpeed, max5Speed, max5Dir, max2Speed, max2Dir, created_at, updated_at) VALUES " + array.join(", ")
+  sql = "INSERT INTO dailies (wban, year_month_day, tmax, tmin, tavg, depart, dew_point, sunrise, sunset, code_sum, depth, snow_fall, precip_total, result_speed, result_dir, avg_speed, max5_speed, max5_dir, max2_speed, max2_dir, created_at, updated_at) VALUES " + array.join(", ")
   ActiveRecord::Base.connection.execute(sql)
 
   puts "---------"
-  puts "#{count} total entries added."
+  puts "#{count} entries from this file were added, with #{$total_count} total entries."
 
 end
-
-# station = Station.find_by(wban: wban)
 
 def scrape_monthlies(file, t)
 
@@ -114,60 +121,74 @@ def scrape_monthlies(file, t)
       wban, yearMonth, avgMaxTemp, departureMaxTemp, avgMinTemp, departureMinTemp, avgTemp, departureFromNormal, avgDewPoint, avgWetBulb, heatingDegreeDays, coolingDegreeDays, hDDMonthlyDeparture, cDDMonthlyDeparture, hDDSeasonToDate, cDDSeasonToDate, hDDSeasonToDateDeparture, cDDSeasonToDateDeparture, meanStationPressure, meanSeaLevelPressure, maxSeaLevelPressure, dateMaxSeaLevelPressure, timeMaxSeaLevelPressure, minSeaLevelPressure, dateMinSeaLevelPressure, timeMinSeaLevelPressure, totalMonthlyPrecip, departureFromNormalPrecip, max24HrPrecip, dateMax24HrPrecip, totalSnowfall, max24HrSnowfall, dateMax24HrSnowfall, max12ZSnowDepth, dateMax12ZSnowDepth, maxTemp_GE_90Days, maxTemp_LE_32Days, minTemp_LE_32Days, minTemp_LE_0Days, thunderstormDays, heavyFogDays, daysWithPrecip_GE_p01inch, daysWithPrecip_GE_p10inch, daysWithSnowfall_GE_1p0inch, waterEquivalent, resultantWindSpeed, resultantWindDirection, avgWindSpeed, avgHDD, avgCDD = split_row
 
       time = ActiveRecord::Base.connection.quote(Time.now)
-      array << "(#{wban}, #{yearMonth}, #{avgMaxTemp}, #{departureMaxTemp}, #{avgMinTemp}, #{departureMinTemp}, #{avgTemp}, #{departureFromNormal}, #{totalMonthlyPrecip}, #{departureFromNormalPrecip}, #{totalSnowfall}, #{max24HrSnowfall}, #{dateMax24HrSnowfall}, #{daysWithPrecip_GE_p01inch}, #{daysWithPrecip_GE_p10inch}, #{daysWithSnowfall_GE_1p0inch}, #{time}, #{time})"
+      array << "(#{wban}, #{yearMonth}, #{avgMaxTemp}, #{departureMaxTemp}, #{avgMinTemp}, #{departureMinTemp}, #{avgTemp}, #{departureFromNormal}, #{totalMonthlyPrecip}, #{departureFromNormalPrecip}, #{max24HrPrecip}, #{dateMax24HrPrecip}, #{totalSnowfall}, #{max24HrSnowfall}, #{dateMax24HrSnowfall}, #{daysWithPrecip_GE_p01inch}, #{daysWithPrecip_GE_p10inch}, #{daysWithSnowfall_GE_1p0inch}, #{time}, #{time})"
     end
 
     count += 1
-    puts "#{Time.now - t} s: #{count} entries added" if count % 250 == 0
+    $total_count += 1
+    puts "#{Time.now - t} s: #{count} entries added" if count % 1000 == 0
 
   end
 
-  sql = "INSERT INTO monthlies (wban, yearMonth, avgMaxTemp, departureMaxTemp, avgMinTemp, departureMinTemp, avgTemp, departureFromNormal, totalMonthlyPrecip, departureFromNormalPrecip, totalSnowfall, max24HrSnowfall, dateMax24HrSnowfall, daysWithPrecip_GE_p01inch, daysWithPrecip_GE_p10inch, daysWithSnowfall_GE_1p0inch, created_at, updated_at) VALUES " + array.join(", ")
+  sql = "INSERT INTO monthlies (wban, year_month, avg_max_temp, departure_max_temp, avg_min_temp, departure_min_temp, avg_temp, departure_from_normal, total_monthly_precip, departure_from_normal_precip, max24_hr_precip, date_max24_hr_precip, total_snowfall, max24_hr_snowfall, date_max24_hr_snowfall, days_with_precip_ge_p01inch, days_with_precip_ge_p10inch, days_with_snowfall_ge_1p0inch, created_at, updated_at) VALUES " + array.join(", ")
   ActiveRecord::Base.connection.execute(sql)
 
   puts "---------"
-  puts "#{count} total entries added."
+  puts "#{count} entries from this file were added, with #{$total_count} total entries."
 
 end
 
+yy = ("07".."17").to_a
+mm = ("01".."12").to_a
+file_yymm = yy.product(mm).map { |y,m| y+m }[4..-8]
+
 namespace :app do
+
+  desc "reset and prep for scraping"
+  task :scrape_prep => :environment do
+    system("rake db:drop")
+    system("rake db:create")
+    system("rake db:migrate")
+    system("rake db:migrate RAILS_ENV=development")
+    puts 'Ready for scraping'
+  end
 
   desc "scrape stations"
   task :scrape_stations => :environment do
-    t = Time.now
+    t, $total_count = Time.now, 0
     scrape_stations("/Users/flatironschool/Downloads/QCLCD_Gathered/201706station.txt", t)
     scrape_stations("/Users/flatironschool/Downloads/QCLCD_Gathered/200705station.txt", t)
     # delete duplicates by WBAN
-    ActiveRecord::Base.connection.execute("delete from stations where id not in (select max(id) from stations group by wban)")
-    t2 = Time.now
-    puts "\nMigration ended at #{Time.now} and took #{(t2 - t) / 60} minutes #{(t2 - t) % 60} seconds)."
-    puts "There are now #{Station.all.count} stations."
+    ActiveRecord::Base.connection.execute("DELETE FROM stations WHERE id NOT IN (SELECT MAX(id) FROM stations GROUP BY wban)")
+    total = (Time.now - t).floor
+    puts "\nMigration ended at #{Time.now} and took #{(total / 60).floor} minutes #{total % 60} seconds)."
+    puts "There are now #{Station.all.count} stations, averaging #{Station.all.count / total} datapoints per second."
   end
 
   desc "scrape hourlies"
   task :scrape_hourlies => :environment do
-    t = Time.now
-    scrape_hourlies("/Users/flatironschool/Downloads/QCLCD_Gathered/201705hourly.txt", t)
-    t2 = Time.now
-    puts "\nMigration ended at #{Time.now} and took #{(t2 - t) / 60} minutes #{(t2 - t) % 60} seconds)."
-    puts "There are now #{Hourly.all.count} hourly datapoints."
+    t, $total_count = Time.now, 0
+    scrape_hourlies("/Users/flatironschool/Downloads/QCLCD_Gathered/201704hourly.txt", t)
+    total = (Time.now - t).floor
+    puts "\nMigration ended at #{Time.now} and took #{(total / 60).floor} minutes #{total % 60} seconds)."
+    puts "There are now #{Hourly.all.count} hourly datapoints, averaging #{Hourly.all.count / total} datapoints per second."
   end
 
   desc "scrape dailies"
   task :scrape_dailies => :environment do
-    t = Time.now
-    scrape_dailies("/Users/flatironschool/Downloads/QCLCD_Gathered/201705daily.txt", t)
-    t2 = Time.now
-    puts "\nMigration ended at #{Time.now} and took #{(t2 - t) / 60} minutes #{(t2 - t) % 60} seconds)."
-    puts "There are now #{Daily.all.count} daily datapoints."
+    t, $total_count = Time.now, 0
+    file_yymm.each { |x| scrape_dailies("/Users/flatironschool/Downloads/QCLCD_Gathered/20" + x + "daily.txt", t) }
+    total = (Time.now - t).floor
+    puts "\nMigration ended at #{Time.now} and took #{(total / 60).floor} minutes #{total % 60} seconds)."
+    puts "There are now #{Daily.all.count} daily datapoints, averaging #{Daily.all.count / total} datapoints per second."
   end
 
   desc "scrape monthlies"
   task :scrape_monthlies => :environment do
-    t = Time.now
-    scrape_monthlies("/Users/flatironschool/Downloads/QCLCD_Gathered/monthly.txt", t)
-    t2 = Time.now
-    puts "\nMigration ended at #{Time.now} and took #{(t2 - t) / 60} minutes #{(t2 - t) % 60} seconds)."
-    puts "There are now #{Monthly.all.count} monthly datapoints."
+    t, $total_count = Time.now, 0
+    file_yymm.each { |x| scrape_monthlies("/Users/flatironschool/Downloads/QCLCD_Gathered/20" + x + "monthly.txt", t) }
+    total = (Time.now - t).floor
+    puts "\nMigration ended at #{Time.now} and took #{(total / 60).floor} minutes #{total % 60} seconds)."
+    puts "There are now #{Monthly.all.count} monthly datapoints, averaging #{Monthly.all.count / total} datapoints per second."
   end
 end

@@ -14,11 +14,11 @@ Things you may want to cover:
   * `rake db:scrape_dailies` pulls all daily data
   * `rake db:scrape_monthlies` pulls all monthly data
 
-# WeatherWokeAPI
+# WeatherCraftAPI
 
 This API is a collection of all hourly/daily/monthly data from every NWS-certified station in the USA. Main information has been pulled into this API, for additional information not included please visit the [NCEI](https://www.ncdc.noaa.gov/orders/qclcd/) site and view the `QCLCDdate.zip` links.
 
-# WeatherWokeApp
+# WeatherCraftApp
 
 ![index](http://imgur.com/kUh6Bdl.png)
 

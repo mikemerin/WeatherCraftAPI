@@ -8,9 +8,8 @@ class CreateStations < ActiveRecord::Migration[5.1]
       t.string :location
       t.string :latitude
       t.string :longitude
-      t.string :groundHeight
-      t.string :stationHeight
-      t.index [:wban], name: "index_stations_on_wban"
+      t.string :ground_height
+      t.string :station_height
 
       t.timestamps
     end

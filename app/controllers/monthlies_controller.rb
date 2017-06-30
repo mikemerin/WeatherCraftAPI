@@ -30,21 +30,23 @@ class MonthliesController < ApplicationController
   def monthly_params
     params.require(:monthly).permit(
         :wban,
-        :yearMonth,
-        :avgMaxTemp,
-        :departureMaxTemp,
-        :avgMinTemp,
-        :departureMinTemp,
-        :avgTemp,
-        :departureFromNormal,
-        :totalMonthlyPrecip,
-        :departureFromNormalPrecip,
-        :totalSnowfall,
-        :max24HrSnowfall,
-        :dateMax24HrSnowfall,
-        :daysWithPrecip_GE_p01inch,
-        :daysWithPrecip_GE_p10inch,
-        :daysWithSnowfall_GE_1p0inch
+        :year_month,
+        :avg_max_temp,
+        :departure_max_temp,
+        :avg_min_temp,
+        :departure_min_temp,
+        :avg_temp,
+        :departure_from_normal,
+        :total_monthly_precip,
+        :departure_from_normal_precip,
+        :max24_hr_precip,
+        :date_max24_hr_precip,
+        :total_snowfall,
+        :max24_hr_snowfall,
+        :date_max24_hr_snowfall,
+        :days_with_precip_ge_p01inch,
+        :days_with_precip_ge_p10inch,
+        :days_with_snowfall_ge_1p0inch
         )
   end
 

@@ -32,17 +32,15 @@ class HourliesController < ApplicationController
         :wban,
         :date,
         :time,
-        :skyCondition,
+        :sky_condition,
         :visibility,
-        :weatherType,
-        :dryBulbFarenheit,
-        :dryBulbCelsius,
-        :dewPointFarenheit,
-        :dewPointCelsius,
-        :relativeHumidity,
-        :windSpeed,
-        :windDirection,
-        :hourlyPrecip,
+        :weather_type,
+        :dry_bulb_farenheit,
+        :dew_point_farenheit,
+        :relative_humidity,
+        :wind_speed,
+        :wind_direction,
+        :hourly_precip
         )
   end
 

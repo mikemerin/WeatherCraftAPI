@@ -30,25 +30,25 @@ class DailiesController < ApplicationController
   def daily_params
     params.require(:daily).permit(
       :wban,
-      :yearMonthDay,
+      :year_month_day,
       :tmax,
       :tmin,
       :tavg,
       :depart,
-      :dewPoint,
+      :dew_point,
       :sunrise,
       :sunset,
-      :codeSum,
+      :code_sum,
       :depth,
-      :snowFall,
-      :precipTotal,
-      :resultSpeed,
-      :resultDir,
-      :avgSpeed,
-      :max5Speed,
-      :max5Dir,
-      :max2Speed,
-      :max2Dir
+      :snow_fall,
+      :precip_total,
+      :result_speed,
+      :result_dir,
+      :avg_speed,
+      :max5_speed,
+      :max5_dir,
+      :max2_speed,
+      :max2_dir
       )
   end
 
