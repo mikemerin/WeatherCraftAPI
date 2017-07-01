@@ -1,28 +1,29 @@
-class MonthliesController < ApplicationController
+class Api::V1::MonthliesController < ApplicationController
 
   def index
     @monthlies = Monthly.all
-  end
-
-  def new
-    @monthly = Monthly.new
+    render json: @monthlies
   end
 
   def create
     @monthly = Monthly.create(monthly_params)
+    render json: @monthly
   end
 
   def show
-    @monthly = Monthly.find_by(id: params[:id])
+    @monthlies = Monthly.where(wban: params[:id])
+    render json: @monthlies
   end
 
-  def edit
+  def show_individual
     @monthly = Monthly.find_by(id: params[:id])
+    render json: @monthly
   end
 
   def update
     @monthly = Monthly.find_by(id: params[:id])
     @monthly.update(monthly_params)
+    render json: @monthly
   end
 
   private

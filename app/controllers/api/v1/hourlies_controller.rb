@@ -1,28 +1,24 @@
-class HourliesController < ApplicationController
+class Api::V1::HourliesController < ApplicationController
 
   def index
     @hourlies = Hourly.all
-  end
-
-  def new
-    @hourly = Hourly.new
+    render json: @hourlies
   end
 
   def create
     @hourly = Hourly.create(hourly_params)
+    render json: @hourly
   end
 
   def show
-    @hourly = Hourly.find_by(id: params[:id])
-  end
-
-  def edit
-    @hourly = Hourly.find_by(id: params[:id])
+    @hourlies = Hourly.where(wban: params[:id])
+    render json: @hourlies
   end
 
   def update
     @hourly = Hourly.find_by(id: params[:id])
     @hourly.update(hourly_params)
+    render json: @hourly
   end
 
   private

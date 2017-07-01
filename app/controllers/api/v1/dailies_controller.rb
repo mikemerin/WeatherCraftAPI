@@ -1,28 +1,24 @@
-class DailiesController < ApplicationController
+class Api::V1::DailiesController < ApplicationController
 
   def index
     @dailies = Daily.all
-  end
-
-  def new
-    @daily = Daily.new
+    render json: @dailies
   end
 
   def create
     @daily = Daily.create(daily_params)
+    render json: @daily
   end
 
   def show
-    @daily = Daily.find_by(id: params[:id])
-  end
-
-  def edit
-    @daily = Daily.find_by(id: params[:id])
+    @dailies = Daily.where(wban: params[:id])
+    render json: @dailies
   end
 
   def update
     @daily = Daily.find_by(id: params[:id])
     @daily.update(daily_params)
+    render json: @daily
   end
 
   private

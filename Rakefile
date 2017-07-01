@@ -155,20 +155,20 @@ namespace :app do
 
   desc "scrape stations"
   task :scrape_stations => :environment do
-    t, $total_count = Time.now, 0
+    t, $total_count, pre_count = Time.now, 0, Station.all.count
     scrape_stations("/Users/flatironschool/Downloads/QCLCD_Gathered/201706station.txt", t)
     scrape_stations("/Users/flatironschool/Downloads/QCLCD_Gathered/200705station.txt", t)
     # delete duplicates by WBAN
     ActiveRecord::Base.connection.execute("DELETE FROM stations WHERE id NOT IN (SELECT MAX(id) FROM stations GROUP BY wban)")
     total = (Time.now - t).floor
     puts "\nMigration ended at #{Time.now} and took #{(total / 60).floor} minutes #{total % 60} seconds)."
-    puts "There are now #{Station.all.count} stations, averaging #{Station.all.count / total} datapoints per second."
+    puts "There are now #{Station.all.count} stations, averaging #{(Station.all.count - pre_count) / total} datapoints per second."
   end
 
   desc "scrape hourlies"
   task :scrape_hourlies => :environment do
     t, $total_count = Time.now, 0
-    scrape_hourlies("/Users/flatironschool/Downloads/QCLCD_Gathered/201704hourly.txt", t)
+    scrape_hourlies("/Users/flatironschool/Downloads/QCLCD_Gathered/201702hourly.txt", t)
     total = (Time.now - t).floor
     puts "\nMigration ended at #{Time.now} and took #{(total / 60).floor} minutes #{total % 60} seconds)."
     puts "There are now #{Hourly.all.count} hourly datapoints, averaging #{Hourly.all.count / total} datapoints per second."

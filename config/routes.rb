@@ -1,9 +1,19 @@
 Rails.application.routes.draw do
-  resources :favorites
-  resources :monthlies
-  resources :dailies
-  resources :hourlies
-  resources :stations
-  resources :users
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  namespace :api do
+    namespace :v1 do
+
+      resources :monthlies, only: [:index, :create, :show, :update]
+      resources :dailies, only: [:index, :create, :show, :update]
+      resources :hourlies, only: [:index, :create, :show, :update]
+      resources :stations, only: [:index, :create, :show, :update]
+
+      get '/monthlies/:wban', to: 'stations#show'
+      get '/dailies/:wban', to: 'stations#show'
+      get '/hourlies/:wban', to: 'stations#show'
+      get '/stations/:wban', to: 'stations#show'
+
+    end
+  end
+
 end

@@ -1,3 +1,5 @@
+require 'friendly_id'
+
 class Station < ApplicationRecord
   has_many :hourlies, primary_key: "wban", foreign_key: "wban"
   has_many :dailies, primary_key: "wban", foreign_key: "wban"

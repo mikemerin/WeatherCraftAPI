@@ -1,28 +1,24 @@
-class StationsController < ApplicationController
+class Api::V1::StationsController < ApplicationController
 
   def index
     @stations = Station.all
-  end
-
-  def new
-    @station = Station.new
+    render json: @stations
   end
 
   def create
     @station = Station.create(station_params)
+    render json: @station
   end
 
   def show
-    @station = Station.find_by(id: params[:id])
-  end
-
-  def edit
-    @station = Station.find_by(id: params[:id])
+    @station = Station.find_by(callsign: params[:id].upcase)
+    render json: @station
   end
 
   def update
     @station = Station.find_by(id: params[:id])
     @station.update(station_params)
+    render json: @station
   end
 
   private
