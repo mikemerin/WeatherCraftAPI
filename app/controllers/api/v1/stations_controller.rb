@@ -11,7 +11,11 @@ class Api::V1::StationsController < ApplicationController
   end
 
   def show
-    @station = Station.find_by(callsign: params[:id].upcase)
+    if params[:id].match(/\d/)
+      @station = Station.find_by(wban: params[:id])
+    else
+      @station = Station.find_by(callsign: params[:id].upcase)
+    end
     render json: @station
   end
 

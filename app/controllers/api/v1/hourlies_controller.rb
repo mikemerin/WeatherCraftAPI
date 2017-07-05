@@ -15,6 +15,11 @@ class Api::V1::HourliesController < ApplicationController
     render json: @hourlies
   end
 
+  def station
+    @hourly = Hourly.find_by(wban: params[:wban], date: params[:date])
+    render json: @hourly
+  end
+
   def update
     @hourly = Hourly.find_by(id: params[:id])
     @hourly.update(hourly_params)

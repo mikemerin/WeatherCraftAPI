@@ -15,6 +15,11 @@ class Api::V1::DailiesController < ApplicationController
     render json: @dailies
   end
 
+  def station
+    @daily = Daily.where(wban: params[:wban], year_month_day: params[:year_month_day])
+    render json: @daily
+  end
+
   def update
     @daily = Daily.find_by(id: params[:id])
     @daily.update(daily_params)

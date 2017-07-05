@@ -15,8 +15,8 @@ class Api::V1::MonthliesController < ApplicationController
     render json: @monthlies
   end
 
-  def show_individual
-    @monthly = Monthly.find_by(id: params[:id])
+  def station
+    @monthly = Monthly.where(wban: params[:wban], year_month: params[:year_month])
     render json: @monthly
   end
 
