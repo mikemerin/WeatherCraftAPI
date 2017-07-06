@@ -140,7 +140,7 @@ end
 
 yy = ("07".."17").to_a
 mm = ("01".."12").to_a
-file_yymm = yy.product(mm).map { |y,m| y+m }[4..-8]
+file_yymm = yy.product(mm).map { |y,m| y+m }[4..-7]
 
 namespace :app do
 
@@ -173,7 +173,7 @@ namespace :app do
     scrape_hourlies("/Users/flatironschool/Downloads/QCLCD_Gathered/201401hourly.txt", t)
     total = (Time.now - t).floor
     puts "\nMigration ended at #{Time.now} and took #{(total / 60).floor} minutes #{total % 60} seconds)."
-    # puts "There are now #{Hourly.all.count} hourly datapoints, averaging #{Hourly.all.count / total} datapoints per second."
+    puts "There are now #{Hourly.all.count} hourly datapoints, averaging #{Hourly.all.count / total} datapoints per second."
   end
 
   desc "scrape dailies"
