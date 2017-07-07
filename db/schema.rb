@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 20170626232634) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "dailies", force: :cascade do |t|
     t.string "wban"
     t.string "year_month_day"
