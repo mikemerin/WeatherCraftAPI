@@ -160,6 +160,7 @@ namespace :app do
     scrape_stations("/Users/flatironschool/Downloads/QCLCD_Gathered/200705station.txt", t)
     # delete duplicates by WBAN
     ActiveRecord::Base.connection.execute("DELETE FROM stations WHERE id NOT IN (SELECT MAX(id) FROM stations GROUP BY wban)")
+    ActiveRecord::Base.connection.execute("DELETE FROM stations WHERE callsign = '' ")
     total = (Time.now - t).floor
     puts "\nMigration ended at #{Time.now} and took #{(total / 60).floor} minutes #{total % 60} seconds."
     puts "There are now #{Station.all.count} stations, averaging #{(Station.all.count - pre_count) / total} datapoints per second."
