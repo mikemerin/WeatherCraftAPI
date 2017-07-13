@@ -36,7 +36,7 @@ class Api::V1::DailiesController < ApplicationController
   #   render json: dailies
   # end
 
-  def station_history
+  def station_historical
     date = params[:year_month_day].slice(4,4)
     years = ("2007".."2017").to_a
     dailies = []
