@@ -23,8 +23,8 @@ class Api::V1::DailiesController < ApplicationController
   def station_adjacent
     day = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])[:id]
     dailies = []
-    ActiveRecord::Base.connection.execute("SELECT * FROM dailies where id < #{day} and wban = '#{params[:wban]}' order by id desc limit 3").reverse_each { |x| dailies << x }
-    ActiveRecord::Base.connection.execute("SELECT * FROM dailies where id >= #{day} and wban = '#{params[:wban]}' order by id limit 4").each { |x| dailies << x }
+    ActiveRecord::Base.connection.execute("SELECT * FROM dailies where id < #{day} and wban = '#{params[:wban]}' order by id desc limit 5").reverse_each { |x| dailies << x }
+    ActiveRecord::Base.connection.execute("SELECT * FROM dailies where id >= #{day} and wban = '#{params[:wban]}' order by id limit 6").each { |x| dailies << x }
     render json: dailies
   end
 
