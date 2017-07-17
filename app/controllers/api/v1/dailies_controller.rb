@@ -30,7 +30,7 @@ class Api::V1::DailiesController < ApplicationController
 
   # def station_history
   #   daily = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])
-  #   wban = daily.wban
+  #   wban = daily.wban.
   #   mmdd = "%#{daily.year_month_day.slice(4, 4)}"
   #   dailies = ActiveRecord::Base.connection.execute("SELECT * FROM dailies where wban = '#{wban}' and year_month_day LIKE '#{mmdd}' limit 10")
   #   render json: dailies
@@ -45,6 +45,9 @@ class Api::V1::DailiesController < ApplicationController
     dailies.map! { |x| Daily.find_by(wban: params[:wban], year_month_day: x) }
     render json: dailies
   end
+
+# alt:
+# Daily.where(wban: '94728', year_month_day: dailies).limit(dailies.size)
 
   def update
     @daily = Daily.find_by(id: params[:id])
