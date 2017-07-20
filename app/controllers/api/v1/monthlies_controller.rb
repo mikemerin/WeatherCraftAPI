@@ -20,11 +20,31 @@ class Api::V1::MonthliesController < ApplicationController
     render json: @monthly
   end
 
+  def station_adjacent
+    month = Monthly.find_by(wban: params[:wban], year_month: params[:year_month])[:id]
+    monthlies = []
+    ActiveRecord::Base.connection.execute("SELECT * FROM monthlies where id < #{month} and wban = '#{params[:wban]}' order by id desc limit 5").reverse_each { |x| monthlies << x }
+    ActiveRecord::Base.connection.execute("SELECT * FROM monthlies where id >= #{month} and wban = '#{params[:wban]}' order by id limit 6").each { |x| monthlies << x }
+    render json: monthlies
+  end
+
+  def station_historical
+    month = params[:year_month].slice(4,4)
+    years = ("2007".."2017").to_a
+    monthlies = []
+    years.each { |x| monthlies << x+month }
+    monthlies.delete_if { |x| x < "200705" || x > "201706" }
+    monthlies.map! { |x| Monthly.find_by(wban: params[:wban], year_month: x) }
+    render json: monthlies
+  end
+
   def update
     @monthly = Monthly.find_by(id: params[:id])
     @monthly.update(monthly_params)
     render json: @monthly
   end
+
+
 
   private
 
