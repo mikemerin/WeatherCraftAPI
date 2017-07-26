@@ -28,6 +28,15 @@ class Api::V1::DailiesController < ApplicationController
     render json: dailies
   end
 
+  # def station_adjacent
+  #   day = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])[:id]
+  #   @dailies = []
+  #   (-5..5).to_a.each do |x|
+  #     @dailies << ActiveRecord::Base.connection.execute("SELECT * FROM dailies where id = #{day + x} and wban = '#{params[:wban]}'")
+  #   end
+  #   render json: @dailies
+  # end
+
   # def station_history
   #   daily = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])
   #   wban = daily.wban.

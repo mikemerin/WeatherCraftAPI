@@ -13,7 +13,7 @@ Rails.application.routes.draw do
       get '/hourlies/:wban', to: 'stations#show'
       get '/stations/:wban', to: 'stations#show'
 
-      get	'/hourlies/:wban/:year_month_day', to: 'hourlies#station'
+      # get	'/hourlies/:wban/:year_month_day', to: 'hourlies#station'
       get	'/dailies/:wban/:year_month_day', to: 'dailies#station'
       get	'/monthlies/:wban/:year_month', to: 'monthlies#station'
 
