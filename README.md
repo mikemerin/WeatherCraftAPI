@@ -44,7 +44,7 @@ This application also allows you to view historical data for each year's given d
 
 ![KNYC 20160123 Front End Historical](http://imgur.com/FwLXU9X.png)
 
-With soon-to-be-released monthly climatological information, including trend lines to view how the weather may look like in the future.
+With soon-to-be-released trend lines to view how the weather may look like in the future.
 
 ### Future updates
 - Navigation - Buttons near date to easily go forward/backward a day/year
