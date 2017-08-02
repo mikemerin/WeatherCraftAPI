@@ -23,8 +23,8 @@ class Api::V1::MonthliesController < ApplicationController
   def station_adjacent
     month = Monthly.find_by(wban: params[:wban], year_month: params[:year_month])[:id]
     monthlies = []
-    ActiveRecord::Base.connection.execute("SELECT * FROM monthlies where id < #{month} and wban = '#{params[:wban]}' order by id desc limit 5").reverse_each { |x| monthlies << x }
-    ActiveRecord::Base.connection.execute("SELECT * FROM monthlies where id >= #{month} and wban = '#{params[:wban]}' order by id limit 6").each { |x| monthlies << x }
+    ActiveRecord::Base.connection.execute("SELECT * FROM monthlies where id < #{month} and wban = '#{params[:wban]}' order by id desc limit 6").reverse_each { |x| monthlies << x }
+    ActiveRecord::Base.connection.execute("SELECT * FROM monthlies where id >= #{month} and wban = '#{params[:wban]}' order by id limit 7").each { |x| monthlies << x }
     render json: monthlies
   end
 
