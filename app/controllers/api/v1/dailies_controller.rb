@@ -15,12 +15,12 @@ class Api::V1::DailiesController < ApplicationController
     render json: @dailies
   end
 
-  def station
+  def entry
     @daily = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])
     render json: [@daily]
   end
 
-  def station_adjacent
+  def entry_adjacent
     day = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])[:id]
     dailies = []
     ActiveRecord::Base.connection.execute("SELECT * FROM dailies where id < #{day} and wban = '#{params[:wban]}' order by id desc limit 5").reverse_each { |x| dailies << x }
@@ -28,7 +28,7 @@ class Api::V1::DailiesController < ApplicationController
     render json: dailies
   end
 
-  # def station_adjacent
+  # defentry_adjacent
   #   day = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])[:id]
   #   @dailies = []
   #   (-5..5).to_a.each do |x|
@@ -37,7 +37,7 @@ class Api::V1::DailiesController < ApplicationController
   #   render json: @dailies
   # end
 
-  # def station_history
+  # def entry_historical
   #   daily = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])
   #   wban = daily.wban.
   #   mmdd = "%#{daily.year_month_day.slice(4, 4)}"
@@ -45,7 +45,7 @@ class Api::V1::DailiesController < ApplicationController
   #   render json: dailies
   # end
 
-  def station_historical
+  def entry_historical
     date = params[:year_month_day].slice(4,4)
     years = ("2007".."2017").to_a
     dailies = []

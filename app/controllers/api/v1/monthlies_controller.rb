@@ -15,12 +15,12 @@ class Api::V1::MonthliesController < ApplicationController
     render json: @monthlies
   end
 
-  def station
+  def entry
     @monthly = Monthly.where(wban: params[:wban], year_month: params[:year_month])
     render json: @monthly
   end
 
-  def station_adjacent
+  def entry_adjacent
     month = Monthly.find_by(wban: params[:wban], year_month: params[:year_month])[:id]
     monthlies = []
     ActiveRecord::Base.connection.execute("SELECT * FROM monthlies where id < #{month} and wban = '#{params[:wban]}' order by id desc limit 6").reverse_each { |x| monthlies << x }
@@ -28,11 +28,21 @@ class Api::V1::MonthliesController < ApplicationController
     render json: monthlies
   end
 
-  def station_historical
+  def entry_yeartoyear
     month = params[:year_month].slice(4,4)
     years = ("2007".."2017").to_a
     monthlies = []
     years.each { |x| monthlies << x+month }
+    monthlies.delete_if { |x| x < "200705" || x > "201706" }
+    monthlies.map! { |x| Monthly.find_by(wban: params[:wban], year_month: x) }
+    render json: monthlies
+  end
+
+  def entry_historical
+    month = params[:year_month].slice(4,4)
+    years = ("2007".."2017").to_a
+    months = ("01".."12").to_a
+    monthlies = years.map { |y| months.map { |m| y+m } }.flatten
     monthlies.delete_if { |x| x < "200705" || x > "201706" }
     monthlies.map! { |x| Monthly.find_by(wban: params[:wban], year_month: x) }
     render json: monthlies
@@ -43,8 +53,6 @@ class Api::V1::MonthliesController < ApplicationController
     @monthly.update(monthly_params)
     render json: @monthly
   end
-
-
 
   private
 
