@@ -39,12 +39,7 @@ class Api::V1::MonthliesController < ApplicationController
   end
 
   def entry_historical
-    month = params[:year_month].slice(4,4)
-    years = ("2007".."2017").to_a
-    months = ("01".."12").to_a
-    monthlies = years.map { |y| months.map { |m| y+m } }.flatten
-    monthlies.delete_if { |x| x < "200705" || x > "201706" }
-    monthlies.map! { |x| Monthly.find_by(wban: params[:wban], year_month: x) }
+    monthlies = Monthly.where(wban: params[:wban])
     render json: monthlies
   end
 

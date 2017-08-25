@@ -28,23 +28,6 @@ class Api::V1::DailiesController < ApplicationController
     render json: dailies
   end
 
-  # defentry_adjacent
-  #   day = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])[:id]
-  #   @dailies = []
-  #   (-5..5).to_a.each do |x|
-  #     @dailies << ActiveRecord::Base.connection.execute("SELECT * FROM dailies where id = #{day + x} and wban = '#{params[:wban]}'")
-  #   end
-  #   render json: @dailies
-  # end
-
-  # def entry_historical
-  #   daily = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])
-  #   wban = daily.wban.
-  #   mmdd = "%#{daily.year_month_day.slice(4, 4)}"
-  #   dailies = ActiveRecord::Base.connection.execute("SELECT * FROM dailies where wban = '#{wban}' and year_month_day LIKE '#{mmdd}' limit 10")
-  #   render json: dailies
-  # end
-
   def entry_historical
     date = params[:year_month_day].slice(4,4)
     years = ("2007".."2017").to_a
@@ -54,9 +37,6 @@ class Api::V1::DailiesController < ApplicationController
     dailies.map! { |x| Daily.find_by(wban: params[:wban], year_month_day: x) }
     render json: dailies
   end
-
-# alt:
-# Daily.where(wban: '94728', year_month_day: dailies).limit(dailies.size)
 
   def update
     @daily = Daily.find_by(id: params[:id])
@@ -92,3 +72,27 @@ class Api::V1::DailiesController < ApplicationController
   end
 
 end
+
+# # note: the following code is reserved for future use in indexing. as of now it is depreciated but will be used in the future.
+
+# defentry_adjacent
+#   day = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])[:id]
+#   @dailies = []
+#   (-5..5).to_a.each do |x|
+#     @dailies << ActiveRecord::Base.connection.execute("SELECT * FROM dailies where id = #{day + x} and wban = '#{params[:wban]}'")
+#   end
+#   render json: @dailies
+# end
+
+# def entry_historical
+#   daily = Daily.find_by(wban: params[:wban], year_month_day: params[:year_month_day])
+#   wban = daily.wban.
+#   mmdd = "%#{daily.year_month_day.slice(4, 4)}"
+#   dailies = ActiveRecord::Base.connection.execute("SELECT * FROM dailies where wban = '#{wban}' and year_month_day LIKE '#{mmdd}' limit 10")
+#   render json: dailies
+# end
+
+# def update
+#   @daily = Daily.where(wban: '94728', year_month_day: dailies).limit(dailies.size)
+#   render json: @daily
+# end
