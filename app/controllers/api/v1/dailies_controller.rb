@@ -33,7 +33,7 @@ class Api::V1::DailiesController < ApplicationController
     years = ("2007".."2017").to_a
     dailies = []
     years.each { |x| dailies << x+date }
-    dailies.delete_if { |x| x < "20070501" || x > "20170630" }
+    dailies.delete_if { |x| x < "20070501" || x > "20170830" }
     dailies.map! { |x| Daily.find_by(wban: params[:wban], year_month_day: x) }
     render json: dailies
   end

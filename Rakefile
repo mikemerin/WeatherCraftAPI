@@ -140,7 +140,7 @@ end
 
 yy = ("07".."17").to_a
 mm = ("01".."12").to_a
-file_yymm = yy.product(mm).map { |y,m| y+m }[4..-7]
+file_yymm = yy.product(mm).map { |y,m| y+m }[4..-5]
 
 namespace :app do
 
@@ -156,7 +156,7 @@ namespace :app do
   desc "scrape stations"
   task :scrape_stations => :environment do
     t, $total_count, pre_count = Time.now, 0, Station.all.count
-    scrape_stations("/Users/flatironschool/Downloads/QCLCD_Gathered/201706station.txt", t)
+    scrape_stations("/Users/flatironschool/Downloads/QCLCD_Gathered/201708station.txt", t)
     scrape_stations("/Users/flatironschool/Downloads/QCLCD_Gathered/200705station.txt", t)
     # delete duplicates by WBAN
     ActiveRecord::Base.connection.execute("DELETE FROM stations WHERE id NOT IN (SELECT MAX(id) FROM stations GROUP BY wban)")

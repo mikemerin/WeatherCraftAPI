@@ -33,7 +33,7 @@ class Api::V1::MonthliesController < ApplicationController
     years = ("2007".."2017").to_a
     monthlies = []
     years.each { |x| monthlies << x+month }
-    monthlies.delete_if { |x| x < "200705" || x > "201706" }
+    monthlies.delete_if { |x| x < "200705" || x > "201708" }
     monthlies.map! { |x| Monthly.find_by(wban: params[:wban], year_month: x) }
     render json: monthlies
   end
